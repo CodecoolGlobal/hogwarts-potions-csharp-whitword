@@ -8,10 +8,10 @@ namespace HogwartsPotions.Models.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
 
-        public string Name { get; set; }
-        public HouseType HouseType { get; set; }
-        public PetType PetType { get; set; }
-        
-        public Room Room { get; set; }
+        public string Name { get; set; } = null!;
+        public HouseType? HouseType { get; set; }
+        public PetType? PetType { get; set; }
+
+        public Room? Room { get; set; }
     }
 }
