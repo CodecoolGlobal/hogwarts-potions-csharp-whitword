@@ -38,6 +38,7 @@ namespace HogwartsPotions.Controllers
         [HttpPut("{id}")]
         public async Task UpdateRoomById(long id, [FromBody] Room updatedRoom)
         {
+            updatedRoom.ID = id;
             await _roomService.UpdateRoom(updatedRoom);
         }
 

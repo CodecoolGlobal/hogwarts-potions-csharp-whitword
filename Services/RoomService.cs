@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Models;
 using HogwartsPotions.Models.Entities;
+using HogwartsPotions.Models.Enums;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions.Services
 {
@@ -20,32 +25,52 @@ namespace HogwartsPotions.Services
 
         public async Task AddRoom(Room room)
         {
-            throw new NotImplementedException();
+            _context.Rooms.Add(room);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Room> GetRoom(long roomId)
         {
-            throw new NotImplementedException();
+            var room = await _context.Rooms
+                .FindAsync(roomId);
+            return room;
         }
 
-        public async Task<List<Room>> GetAllRooms()
+        public Task<List<Room>> GetAllRooms()
         {
-            throw new NotImplementedException();
+            var rooms = _context.Rooms.ToListAsync();
+            return rooms;
         }
 
-        public async Task UpdateRoom(Room room)
+        public Task UpdateRoom(Room room)
         {
-            throw new NotImplementedException();
+            var roomToUpdate = _context.Rooms
+                .Find(room.ID);
+            if (roomToUpdate != null)
+            {
+                _context.Rooms.Remove(roomToUpdate);
+                _context.Rooms.Add(room);
+                _context.SaveChangesAsync();
+            }
+            return GetRoom(room.ID);
         }
 
-        public async Task DeleteRoom(long id)
+        public Task DeleteRoom(long id)
         {
-            throw new NotImplementedException();
+            var roomToUpdate = _context.Rooms
+                .Find(id);
+            if (roomToUpdate != null) _context.Remove((object)roomToUpdate);
+            return GetAllRooms();
         }
 
-        public async Task<List<Room>> GetRoomsForRatOwners()
+        public Task<List<Room>> GetRoomsForRatOwners()
         {
-            throw new NotImplementedException();
+            var rooms =  _context.Rooms.ToList()
+                .Where(room => room.Residents
+                                   .FirstOrDefault(student =>
+                                       student.PetType == PetType.Cat || student.PetType == PetType.Owl) ==
+                               null).ToList();
+            return Task.FromResult<List<Room>>(rooms);
         }
     }
 }
