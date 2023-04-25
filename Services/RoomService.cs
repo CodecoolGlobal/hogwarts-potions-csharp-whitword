@@ -78,5 +78,39 @@ namespace HogwartsPotions.Services
                 .ToList();
             return Task.FromResult<List<Room>>(rooms);
         }
+
+        public Task<List<Room>> AvailableRooms()
+        {
+            var rooms = _context.Rooms
+                .Include(room => room.Residents)
+                .Where(room => !room.Residents
+                    .Any()).ToList();
+            return Task.FromResult<List<Room>>(rooms);
+        }
+
+        public async Task<Student> AddStudentToRoom(Student student)
+        {
+            Student studentToHandle = await _context.Students.FindAsync(student.ID);
+
+            if (studentToHandle == null) return null;
+            
+            var rooms = GetAllRooms().Result;
+            Room roomToAddStudent = AvailableRooms().Result.FirstOrDefault() ??
+                                    rooms.FirstOrDefault(r => r.Residents.Count < r.Capacity);
+            if (roomToAddStudent == null) return null;
+
+            Room roomToRemoveStudent = rooms.FirstOrDefault(room => room.Residents.Contains(studentToHandle));
+            if (roomToRemoveStudent != null)
+            {
+                Room oldRoomInDb = GetRoom(roomToRemoveStudent.ID).Result;
+                oldRoomInDb!.Residents.Remove(studentToHandle);
+            }
+
+            Room newRoomInDb = GetRoom(roomToAddStudent.ID).Result;
+            newRoomInDb.Residents.Add(studentToHandle);
+            studentToHandle.Room = roomToAddStudent;
+            await _context.SaveChangesAsync();
+            return await _context.Students.FindAsync(student.ID);;
+        }
     }
 }
