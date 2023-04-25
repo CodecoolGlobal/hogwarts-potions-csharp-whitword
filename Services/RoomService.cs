@@ -31,14 +31,18 @@ namespace HogwartsPotions.Services
 
         public async Task<Room> GetRoom(long roomId)
         {
-            var room = await _context.Rooms
-                .FindAsync(roomId);
-            return room;
+            var rooms = await _context.Rooms
+                .Include(room => room.Residents)
+                .ToListAsync();
+                
+                return rooms.FirstOrDefault(room => room.ID == roomId);
         }
 
         public Task<List<Room>> GetAllRooms()
         {
-            var rooms = _context.Rooms.ToListAsync();
+            var rooms = _context.Rooms
+                .Include(room => room.Residents)
+                .ToListAsync();
             return rooms;
         }
 
@@ -65,11 +69,13 @@ namespace HogwartsPotions.Services
 
         public Task<List<Room>> GetRoomsForRatOwners()
         {
-            var rooms =  _context.Rooms.ToList()
+            var rooms = _context.Rooms
                 .Where(room => room.Residents
                                    .FirstOrDefault(student =>
                                        student.PetType == PetType.Cat || student.PetType == PetType.Owl) ==
-                               null).ToList();
+                               null)
+                .Include(room => room.Residents)
+                .ToList();
             return Task.FromResult<List<Room>>(rooms);
         }
     }
