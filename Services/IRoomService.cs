@@ -12,4 +12,6 @@ public interface IRoomService
     Task UpdateRoom(Room room);
     Task DeleteRoom(long id);
     Task<List<Room>> GetRoomsForRatOwners();
+    Task<List<Room>> AvailableRooms();
+    Task<Student> AddStudentToRoom(Student student);
 }

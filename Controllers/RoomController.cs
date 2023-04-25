@@ -53,5 +53,15 @@ namespace HogwartsPotions.Controllers
         {
             return await _roomService.GetRoomsForRatOwners();
         }
+        [HttpGet, Route("available")]
+        public Task<List<Room>> ListAvailableRooms()
+        {
+            return _roomService.AvailableRooms();
+        }
+        [HttpPut, Route("addStudent")]
+        public Task<Student> AddStudentToRoom([FromBody]Student student)
+        {
+            return _roomService.AddStudentToRoom(student);
+        }
     }
 }
