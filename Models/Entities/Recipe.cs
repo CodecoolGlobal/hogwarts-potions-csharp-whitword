@@ -12,9 +12,9 @@ public class Recipe
     public string Name { get; set; } = null!;
     
     [JsonIgnore]
-    public Student? Student { get; set; }
+    public Student Student { get; set; }
 
     
-    public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
+    public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 
 }

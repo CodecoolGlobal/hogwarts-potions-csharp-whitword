@@ -12,14 +12,20 @@ public class Potion
     
     public string Name { get; set; } = null!;
     
-    [JsonIgnore]
-    public Student? Student { get; set; }
+    public Student Student { get; set; }
     
-    public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
+    public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
     
     public BrewingStatus BrewingStatus { get; set; }
     
-    [JsonIgnore]
     public Recipe Recipe { get; set; }
 
+}
+public class PotionDTO
+{
+    public long ID { get; set; }
+    
+    public string Name { get; set; } = null!;
+    
+    public List<IngredientDTO> Ingredients { get; set; } = new List<IngredientDTO>();
 }
