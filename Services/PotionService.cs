@@ -21,11 +21,13 @@ public class PotionService : IPotionService
     
     public async Task<Potion> AddPotion(PotionDTO requestPotionDto)
     {
-        Student student = _context.Students.Find(requestPotionDto.StudentID);
+        Student student = await _context.Students.FindAsync(requestPotionDto.StudentID);
         if (student == null) return null;
-        Potion potion = new Potion();
-        potion.Name = $"{student.Name}'s Potion";
-        potion.Student = student;
+        Potion potion = new Potion
+        {
+            Name = $"{student.Name}'s Potion",
+            Student = student
+        };
         var contextIngredients = _context.Ingredients.ToList();
            foreach (var ingredient in requestPotionDto.Ingredients)
            {
@@ -65,7 +67,7 @@ public class PotionService : IPotionService
 
             _context.Recipes.Add(newRecipe);
             await _context.SaveChangesAsync();
-            potion.Recipe = _context.Recipes.FirstOrDefault(recipe => recipe.Name == recipeName);;
+            potion.Recipe = _context.Recipes.FirstOrDefault(recipe => recipe.Name == recipeName);
             potion.BrewingStatus = BrewingStatus.Discovery;
         }
         else
