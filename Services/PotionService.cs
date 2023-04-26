@@ -43,9 +43,14 @@ public class PotionService : IPotionService
         var studentsRecipes = recipes.Where(recipe => recipe.Student.ID == id);
         foreach (var recipe in recipes)
         {
-            var result = recipe.Ingredients.IntersectBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
-            if (result.Count() == recipe.Ingredients.Count()) potion.Recipe = recipe;
-            break;
+            var result1 = recipe.Ingredients.ExceptBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
+            var result2 = potion.Ingredients.ExceptBy(recipe.Ingredients.Select(x => x.ID), x => x.ID);
+
+            if (!result1.Any() && !result2.Any())
+            { 
+                potion.Recipe = recipe;
+                break;
+            }
         }
 
         if (potion.Recipe == null)
