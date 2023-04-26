@@ -9,6 +9,7 @@ public interface IPotionService
     Task<Potion> AddPotion(PotionDTO potion);
     Task<Potion> GetPotion(long potionId);
     Task<List<Potion>> GetAllPotions();
+    Task<List<Potion>> GetPotionsPerStudent(long studentId);
     Task UpdatePotion(Potion potion);
     Task DeletePotion(long id);
 }

@@ -89,9 +89,9 @@ public class PotionService : IPotionService
         return potion;
     }
 
-    public Task<List<Potion>> GetAllPotions()
+    public async Task<List<Potion>> GetAllPotions()
     {
-        var potions = _context.Potions
+        var potions = await _context.Potions
             .Include(potion=>potion.Student)
             .Include(potion=>potion.Ingredients)
             .Include(potion=>potion.Recipe)
@@ -99,7 +99,17 @@ public class PotionService : IPotionService
             .ToListAsync();
         return potions;
     }
-
+    public async Task<List<Potion>> GetPotionsPerStudent(long studentId)
+    {
+        var potionsPerStudent =await _context.Potions
+            .Include(potion=>potion.Student)
+            .Include(potion=>potion.Ingredients)
+            .Include(potion=>potion.Recipe)
+            .ThenInclude(r => r.Ingredients)
+            .Where(potion => potion.Student.ID == studentId)
+            .ToListAsync();
+        return potionsPerStudent;
+    }
     public Task UpdatePotion(Potion potion)
     {
         throw new System.NotImplementedException();
