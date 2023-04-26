@@ -23,7 +23,7 @@ public class Potion
 }
 public class PotionDTO
 {
-    public long ID { get; set; }
+    public long StudentID { get; set; }
     
     public string Name { get; set; } = null!;
     

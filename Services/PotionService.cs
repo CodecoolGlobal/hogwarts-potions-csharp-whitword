@@ -19,15 +19,15 @@ public class PotionService : IPotionService
         _context = context;
     }
     
-    public async Task<Potion> AddPotion(long id, List<IngredientDTO> ingredients)
+    public async Task<Potion> AddPotion(PotionDTO requestPotionDto)
     {
-        Student student = _context.Students.Find(id);
+        Student student = _context.Students.Find(requestPotionDto.StudentID);
         if (student == null) return null;
         Potion potion = new Potion();
         potion.Name = $"{student.Name}'s Potion";
         potion.Student = student;
         var contextIngredients = _context.Ingredients.ToList();
-           foreach (var ingredient in ingredients)
+           foreach (var ingredient in requestPotionDto.Ingredients)
            {
                {
                    var ingredientInDb = contextIngredients.FirstOrDefault(i=>i.ID == ingredient.ID);
@@ -40,7 +40,7 @@ public class PotionService : IPotionService
             .Include(recipe=>recipe.Ingredients)
             .Include(recipe=>recipe.Student)
             .ToList();
-        var studentsRecipes = recipes.Where(recipe => recipe.Student.ID == id);
+        var studentsRecipes = recipes.Where(recipe => recipe.Student.ID == requestPotionDto.StudentID);
         foreach (var recipe in recipes)
         {
             var result1 = recipe.Ingredients.ExceptBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
