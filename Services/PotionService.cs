@@ -107,6 +107,12 @@ public class PotionService : IPotionService
 
     public Task DeletePotion(long id)
     {
-        throw new System.NotImplementedException();
+        Task<Potion> potion = GetPotion(id);
+        if (potion.Result != null)
+        {
+            _context.Potions.Remove(potion.Result);
+            return _context.SaveChangesAsync();
+        }
+        return potion;
     }
 }
