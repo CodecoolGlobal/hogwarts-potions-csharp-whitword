@@ -26,6 +26,11 @@ public class PotionController : ControllerBase
     {
         return await _potionService.GetPotionsPerStudent(id);
     }
+    [HttpGet("/potions/{id}/help")]
+    public async Task<List<Recipe>> Help(long id)
+    {
+        return await _potionService.Help(id);
+    }
     [HttpPost]
     public async Task<Potion> AddPotion([FromBody] PotionDTO potion)
     {

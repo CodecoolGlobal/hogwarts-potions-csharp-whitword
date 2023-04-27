@@ -175,4 +175,32 @@ public class PotionService : IPotionService
         }
         return potion;
     }
+
+    public Task<List<Recipe>> Help(long id)
+    {
+        var potion = GetPotion(id).Result;
+        if (potion == null) return null;
+        if (potion.Ingredients.Count >= 5) return null;
+            var recipeList = new List<Recipe>() { };
+            var recipes =
+                _context.Recipes
+                    .Include(recipe => recipe.Ingredients)
+                    .ToList();
+        if (potion.Ingredients.Any())
+        {
+            foreach (var recipe in recipes)
+            {
+                var result = potion.Ingredients.IntersectBy(recipe.Ingredients.Select(x => x.ID), x => x.ID).ToList();
+                if (result.Count == potion.Ingredients.Count)
+                {
+                    recipeList.Add(recipe);
+                }
+            }
+        }
+        else
+        {
+            recipeList = recipes;
+        }
+        return Task.FromResult(recipeList);
+    }
 }
