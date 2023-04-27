@@ -28,7 +28,7 @@ public class PotionService : IPotionService
             Name = $"{student.Name}'s Potion",
             Student = student
         };
-        if (requestPotionDto.BrewingStatus == BrewingStatus.Brew)
+        if (!requestPotionDto.Ingredients.Any())
         {
             potion.BrewingStatus = BrewingStatus.Brew;
             _context.Potions.Add(potion);
@@ -43,28 +43,10 @@ public class PotionService : IPotionService
                    if(ingredientInDb!=null) potion.Ingredients.Add(ingredientInDb);
                }
            }
-
-        var recipes = 
-            _context.Recipes
-            .Include(recipe=>recipe.Ingredients)
-            .Include(recipe=>recipe.Student)
-            .ToList();
-        var studentsRecipes = recipes.Where(recipe => recipe.Student.ID == requestPotionDto.StudentID);
-        foreach (var recipe in recipes)
+        
+        if (RecipeChecker(potion) == null)
         {
-            var result1 = recipe.Ingredients.ExceptBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
-            var result2 = potion.Ingredients.ExceptBy(recipe.Ingredients.Select(x => x.ID), x => x.ID);
-
-            if (!result1.Any() && !result2.Any())
-            { 
-                potion.Recipe = recipe;
-                break;
-            }
-        }
-
-        if (potion.Recipe == null)
-        {
-            string recipeName = $"{student.Name}'s Discovery #{studentsRecipes.Count()}";
+            string recipeName = $"{student.Name}'s Discovery #{_context.Recipes.Count(recipe => recipe.Student.ID == student.ID)}";
             Recipe newRecipe = new Recipe
             {
                 Name = recipeName,
@@ -74,12 +56,13 @@ public class PotionService : IPotionService
 
             _context.Recipes.Add(newRecipe);
             await _context.SaveChangesAsync();
-            potion.Recipe = _context.Recipes.FirstOrDefault(recipe => recipe.Name == recipeName);
+            potion.Recipe = newRecipe;
             potion.BrewingStatus = BrewingStatus.Discovery;
         }
         else
         {
-             potion.BrewingStatus = BrewingStatus.Replica;
+            potion.Recipe = RecipeChecker(potion);
+            potion.BrewingStatus = BrewingStatus.Replica;
         }
         
         _context.Potions.Add(potion);
@@ -124,6 +107,26 @@ public class PotionService : IPotionService
         throw new System.NotImplementedException();
     }
 
+    private Recipe RecipeChecker(Potion potion)
+    {
+        var recipes =
+            _context.Recipes
+                .Include(recipe => recipe.Ingredients)
+                .ToList();
+        foreach (var recipe in recipes)
+        {
+            var result1 = recipe.Ingredients.ExceptBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
+            var result2 = potion.Ingredients.ExceptBy(recipe.Ingredients.Select(x => x.ID), x => x.ID);
+
+            if (!result1.Any() && !result2.Any())
+            {
+                return recipe;
+            }
+
+        }
+        return null;
+    }
+    
     public Task DeletePotion(long id)
     {
         Task<Potion> potion = GetPotion(id);
