@@ -28,6 +28,13 @@ public class PotionService : IPotionService
             Name = $"{student.Name}'s Potion",
             Student = student
         };
+        if (requestPotionDto.BrewingStatus == BrewingStatus.Brew)
+        {
+            potion.BrewingStatus = BrewingStatus.Brew;
+            _context.Potions.Add(potion);
+            await _context.SaveChangesAsync();
+            return potion;
+        }
         var contextIngredients = _context.Ingredients.ToList();
            foreach (var ingredient in requestPotionDto.Ingredients)
            {

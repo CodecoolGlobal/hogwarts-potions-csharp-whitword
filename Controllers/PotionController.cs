@@ -31,6 +31,11 @@ public class PotionController : ControllerBase
     {
         return await _potionService.AddPotion(potion);
     }
+    [HttpPost("/potions/brew")]
+    public async Task<Potion> BrewPotion([FromBody] PotionDTO potion)
+    {
+        return await _potionService.AddPotion(potion);
+    }
     [HttpDelete("{id}")]
     public async Task DeletePotion(long id)
     {
