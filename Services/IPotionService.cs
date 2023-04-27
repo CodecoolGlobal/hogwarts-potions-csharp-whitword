@@ -10,6 +10,6 @@ public interface IPotionService
     Task<Potion> GetPotion(long potionId);
     Task<List<Potion>> GetAllPotions();
     Task<List<Potion>> GetPotionsPerStudent(long studentId);
-    Task UpdatePotion(Potion potion);
+    Task<Potion> UpdatePotion(long id, IngredientDTO ingredient);
     Task DeletePotion(long id);
 }

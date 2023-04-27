@@ -102,9 +102,47 @@ public class PotionService : IPotionService
             .ToListAsync();
         return potionsPerStudent;
     }
-    public Task UpdatePotion(Potion potion)
+    public async Task<Potion> UpdatePotion(long id, IngredientDTO ingredient)
     {
-        throw new System.NotImplementedException();
+        var potion = GetPotion(id).Result;
+        var ingredientDb = _context.Ingredients.FirstOrDefault(i => i.ID == ingredient.ID);
+        if (ingredientDb == null)
+        {
+            ingredientDb = new Ingredient { Name = ingredient.Name };
+            _context.Ingredients.Add(ingredientDb);
+            await _context.SaveChangesAsync();
+        }
+
+        if (!potion.Ingredients.Contains(ingredientDb))
+        {
+            potion.Ingredients.Add(ingredientDb);
+            await _context.SaveChangesAsync();
+        }
+
+        if (potion.Ingredients.Count >= MaxIngredientsForPotions)
+        {
+            if (RecipeChecker(potion) == null)
+            {
+                string recipeName = $"{potion.Student.Name}'s Discovery #{_context.Recipes.Count(recipe => recipe.Student.ID == potion.Student.ID)}";
+                Recipe newRecipe = new Recipe
+                {
+                    Name = recipeName,
+                    Student = potion.Student,
+                    Ingredients = potion.Ingredients
+                };
+
+                _context.Recipes.Add(newRecipe);
+                await _context.SaveChangesAsync();
+                potion.Recipe = newRecipe;
+                potion.BrewingStatus = BrewingStatus.Discovery;
+            }
+            else
+            {
+                potion.Recipe = RecipeChecker(potion);
+                potion.BrewingStatus = BrewingStatus.Replica;
+            }
+        }
+        return potion;
     }
 
     private Recipe RecipeChecker(Potion potion)
