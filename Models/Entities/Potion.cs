@@ -13,7 +13,6 @@ public class Potion
     public string Name { get; set; } = null!;
     
     public Student Student { get; set; }
-    
     public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
     
     public BrewingStatus BrewingStatus { get; set; }
