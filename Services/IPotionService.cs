@@ -13,4 +13,5 @@ public interface IPotionService
     Task<Potion> UpdatePotion(long id, IngredientDTO ingredient);
     Task DeletePotion(long id);
     Task<List<Recipe>> Help(long id);
+    List<Ingredient> ListAvailableIngredients();
 }

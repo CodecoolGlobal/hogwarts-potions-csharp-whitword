@@ -204,4 +204,9 @@ public class PotionService : IPotionService
         }
         return Task.FromResult(recipeList);
     }
+
+    public List<Ingredient> ListAvailableIngredients()
+    {
+        return _context.Ingredients.ToList();
+    }
 }
