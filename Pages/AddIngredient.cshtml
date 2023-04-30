@@ -1,0 +1,88 @@
+@page "{id:long}"
+@using HogwartsPotions.Models.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model HogwartsPotions.Pages.AddIngredient
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "PotionModel";
+}
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+</head>
+<body>
+<h4>@Model.PotionModel.Name Ingredients</h4>
+@if (Model.PotionModel.BrewingStatus is BrewingStatus.Discovery)
+{
+   <h5 class="text-success">Congrats!! Your potion is a discovery!</h5>
+}
+@if (Model.PotionModel.BrewingStatus is BrewingStatus.Replica)
+{
+    <h5 class="text-info">Your potion is a replica!</h5>
+}
+<div>
+    <table class="table table-hover">
+        <thead class="p-2">
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            @*
+            <th></th>
+        *@
+        </tr>
+        </thead>
+        <tbody class="P-5">
+
+        @foreach (var obj in Model.PotionModel.Ingredients)
+        {
+            <tr>
+                <td>@obj.ID</td>
+                <td>@obj.Name</td>
+                @*
+                <td><a class="btn btn-warning" asp-controller="Pages" asp-action="DeleteIngredient" asp-route-id="@obj.ID">Delete</a></td>
+            *@
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<h4>Add ingredient</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">@*  asp-controller="Pages" asp-action="UpdatePotion" asp-route="@Model.PotionModel.ID">*@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.NewIngredient.ID" class="control-label"></label>
+                <select asp-for="@Model.NewIngredient.ID" asp-items="@Model.IngredientList" class="form-control">
+                    <option>Select Ingredient</option>
+                </select>
+                <span asp-validation-for="@Model.NewIngredient.ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-page="/Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+</body>
