@@ -1,0 +1,67 @@
+@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model HogwartsPotions.Pages.Index
+@{
+    ViewData["Title"] = "Hogwart's Potions";
+}
+
+@{
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+
+    <h1>@ViewData["Title"]</h1>
+    <br/>
+    <div class="d-flex flex-row bd-highlight mb-3">
+        <h3 class="flex-grow-1">List of Potions</h3>
+        <a class="position-relative text-dark btn btn-info m-2" asp-area="" asp-page="/BrewPotion">Add new potion</a>
+    </div>
+</head>
+<body>
+<div>
+    <table class="table table-hover">
+        <thead class="p-2">
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Student
+            </th>
+            <th>
+                BrewingStatus
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody class="P-5">
+        
+        @foreach (var obj in Model.PotionList)
+        {
+            <tr>
+                <td>@obj.ID</td>
+                <td>@obj.Name</td>
+                <td>@obj.Student.Name</td>
+                <td>@obj.BrewingStatus</td>
+                @*
+                <td><a class="btn btn-secondary" asp-controller="Pages" asp-action="AddIngredient" asp-route-id="@obj.ID">ViewIngredients</a></td>
+                *@
+                <td><a class="btn btn-secondary" asp-page="/AddIngredient" asp-route-id="@obj.ID">ViewIngredients</a></td>
+                <td><a class="btn btn-warning" asp-controller="Pages" asp-action="DeletePotion" asp-route-id="@obj.ID">Delete</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
