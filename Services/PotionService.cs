@@ -132,14 +132,15 @@ public class PotionService : IPotionService
                 };
 
                 _context.Recipes.Add(newRecipe);
-                await _context.SaveChangesAsync();
                 potion.Recipe = newRecipe;
                 potion.BrewingStatus = BrewingStatus.Discovery;
+                await _context.SaveChangesAsync();
             }
             else
             {
                 potion.Recipe = RecipeChecker(potion);
                 potion.BrewingStatus = BrewingStatus.Replica;
+                await _context.SaveChangesAsync();
             }
         }
         return potion;
@@ -180,7 +181,7 @@ public class PotionService : IPotionService
     {
         var potion = GetPotion(id).Result;
         if (potion == null) return null;
-        if (potion.Ingredients.Count >= 5) return null;
+        if (potion.Ingredients is { Count: >= 5 }) return null;
             var recipeList = new List<Recipe>() { };
             var recipes =
                 _context.Recipes
