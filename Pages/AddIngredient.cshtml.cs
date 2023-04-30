@@ -54,8 +54,9 @@ public class AddIngredient : PageModel
         return Page();
         
     }
-
-    [BindProperty] public IngredientDTO NewIngredient { get; set; } = new IngredientDTO();
+    
+    [BindProperty] 
+    public IngredientDTO NewIngredient { get; set; }
     public async Task<IActionResult> OnPost(long id)
     {
         await _potionService.UpdatePotion(id, NewIngredient);
