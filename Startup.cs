@@ -25,6 +25,7 @@ namespace HogwartsPotions
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IPotionService, PotionService>();
+            services.AddRazorPages();
 
             services.AddControllersWithViews();
         }
@@ -51,6 +52,7 @@ namespace HogwartsPotions
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
