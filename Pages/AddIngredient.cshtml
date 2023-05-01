@@ -21,11 +21,11 @@
 <h4>@Model.PotionModel.Name Ingredients</h4>
 @if (Model.PotionModel.BrewingStatus is BrewingStatus.Discovery)
 {
-   <h5 class="text-success">Congrats!! Your potion is a discovery!</h5>
+   <div class="alert alert-success">Congrats!! Your potion is a discovery!</div>
 }
 @if (Model.PotionModel.BrewingStatus is BrewingStatus.Replica)
 {
-    <h5 class="text-info">Your potion is a replica!</h5>
+    <div class="alert alert-info">Your potion is a replica!</div>
 }
 <div>
     <table class="table table-hover">
@@ -37,9 +37,7 @@
             <th>
                 Name
             </th>
-            @*
             <th></th>
-        *@
         </tr>
         </thead>
         <tbody class="P-5">
@@ -49,36 +47,41 @@
             <tr>
                 <td>@obj.ID</td>
                 <td>@obj.Name</td>
-                @*
-                <td><a class="btn btn-warning" asp-controller="Pages" asp-action="DeleteIngredient" asp-route-id="@obj.ID">Delete</a></td>
-            *@
+                @if (Model.PotionModel.Ingredients.Count < 5)
+                {
+                    <td><a class="btn btn-warning" asp-controller="Pages" asp-action="DeleteIngredient" asp-route-potionId="@Model.PotionModel.ID" asp-route-ingredientId="@obj.ID">Delete</a></td>
+                }
             </tr>
         }
         </tbody>
     </table>
 </div>
-
-<h4>Add ingredient</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+@if (Model.PotionModel.Ingredients.Count < 5)
+{
+    <h4>Add ingredient</h4>
+    <hr/>
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    @*
                 <label asp-for="@Model.NewIngredient.ID" class="control-label"></label>
-                <select asp-for="@Model.NewIngredient.ID" asp-items="@Model.IngredientList" class="form-control">
-                    <option>Select Ingredient</option>
-                </select>
-                <span asp-validation-for="@Model.NewIngredient.ID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary"/>
-            </div>
-        </form>
+                *@
+                    <select asp-for="@Model.NewIngredient.ID" asp-items="@Model.IngredientList" class="form-control">
+                        <option>Select Ingredient</option>
+                    </select>
+                    <span asp-validation-for="@Model.NewIngredient.ID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+}
 <div>
-    <a asp-page="/Index">Back to List</a>
+    <a class="btn btn-secondary" asp-page="/Index">Back to List</a>
 </div>
 
 @section Scripts {

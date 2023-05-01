@@ -1,4 +1,5 @@
 @page
+@using HogwartsPotions.Models.Enums
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model HogwartsPotions.Pages.Index
@@ -53,10 +54,14 @@
                 <td>@obj.Name</td>
                 <td>@obj.Student.Name</td>
                 <td>@obj.BrewingStatus</td>
-                @*
-                <td><a class="btn btn-secondary" asp-controller="Pages" asp-action="AddIngredient" asp-route-id="@obj.ID">ViewIngredients</a></td>
-                *@
-                <td><a class="btn btn-secondary" asp-page="/AddIngredient" asp-route-id="@obj.ID">ViewIngredients</a></td>
+                @if (obj.BrewingStatus == BrewingStatus.Brew)
+                {
+                <td><a class="btn btn-info" asp-page="/AddIngredient" asp-route-id="@obj.ID">Add Ingredient</a></td>
+                }
+                else
+                {
+                <td><a class="btn btn-secondary" asp-page="/AddIngredient" asp-route-id="@obj.ID">View Ingredients</a></td>
+                }
                 <td><a class="btn btn-warning" asp-controller="Pages" asp-action="DeletePotion" asp-route-id="@obj.ID">Delete</a></td>
             </tr>
         }
