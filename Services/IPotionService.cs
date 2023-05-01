@@ -14,4 +14,5 @@ public interface IPotionService
     Task DeletePotion(long id);
     Task<List<Recipe>> Help(long id);
     List<Ingredient> ListAvailableIngredients();
+    Task RemoveIngredientFromPotion(long potionId, long ingredientId);
 }

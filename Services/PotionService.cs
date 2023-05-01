@@ -209,4 +209,11 @@ public class PotionService : IPotionService
     {
         return _context.Ingredients.ToList();
     }
+    public async Task RemoveIngredientFromPotion(long potionId, long ingredientId)
+    {
+        var potionDb = GetPotion(potionId).Result;
+        var ingredientDb = _context.Ingredients.FirstOrDefault(i => i.ID == ingredientId);
+        if (potionDb != null && ingredientDb!=null) potionDb.Ingredients.Remove(ingredientDb);
+        await _context.SaveChangesAsync();
+    }
 }

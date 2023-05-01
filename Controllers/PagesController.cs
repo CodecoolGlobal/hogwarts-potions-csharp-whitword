@@ -21,7 +21,12 @@ public class PagesController : Controller
         await _potionService.DeletePotion(id);
         return RedirectToPage("/Index");
     }
-    
+
+    public async Task<IActionResult> DeleteIngredient(long potionId, long ingredientId)
+    {
+        await _potionService.RemoveIngredientFromPotion(potionId, ingredientId);
+        return RedirectToPage("/Index");
+    }
     [HttpPost]
     public async Task<IActionResult> BrewPotion(PotionDTO potion)
     {
