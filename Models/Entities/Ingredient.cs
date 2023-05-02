@@ -16,9 +16,3 @@ public class Ingredient
     public List<Recipe> RecipeList { get; set; } = null;
 
 }
-public class IngredientDTO
-{
-    public long ID { get; set; }
-    
-    public string Name { get; set; } = null!;
-}

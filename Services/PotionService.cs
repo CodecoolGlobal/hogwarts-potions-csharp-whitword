@@ -154,10 +154,13 @@ public class PotionService : IPotionService
                 .ToList();
         foreach (var recipe in recipes)
         {
+            var recipeExists = recipe.Ingredients.OrderBy(ingredient => ingredient.ID)
+                .SequenceEqual(potion.Ingredients.OrderBy(ing => ing.ID));
             var result1 = recipe.Ingredients.ExceptBy(potion.Ingredients.Select(x => x.ID), x => x.ID);
             var result2 = potion.Ingredients.ExceptBy(recipe.Ingredients.Select(x => x.ID), x => x.ID);
 
-            if (!result1.Any() && !result2.Any())
+           // if (!result1.Any() && !result2.Any())
+           if(recipeExists)
             {
                 return recipe;
             }

@@ -1,4 +1,5 @@
 using HogwartsPotions.Models;
+using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace HogwartsPotions
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IPotionService, PotionService>();
             services.AddRazorPages();
+            
 
             services.AddControllersWithViews();
         }
@@ -33,6 +35,16 @@ namespace HogwartsPotions
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<HogwartsContext>();
+                context.Database.EnsureCreated();
+                //Seed data
+                context.Students.Add(new Student { Name = "Hermione Granger" });
+                context.Ingredients.Add(new Ingredient { Name = "Cinnamon" });
+                context.SaveChanges();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
